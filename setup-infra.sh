@@ -50,7 +50,7 @@ privateip="$(az vm list-ip-addresses \
       --name webservervm1 \
       --query "[0].virtualMachine.network.privateIpAddresses[0]" \
       --output tsv)"
-pricateip=`eval echo $privateip`
+privateip=`eval echo $privateip`
 
 # Create SSL certificate for the VM
 echo "Creating SSL certificate for connection from App Gateway to VM"
