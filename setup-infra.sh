@@ -30,16 +30,16 @@ az vm open-port --port 80 --resource-group $rgName --name webservervm1
 echo "Opening port 443"
 az vm open-port --port 443 --resource-group $rgName --name webservervm1 --priority 110
 
-# Get the FQDN of the Application Gateway
-echo "Retrieving FQDN of App Gateway"
-fqdn="$(az network public-ip show \
+# Get the pubic IP address of the Application Gateway
+echo "Retrieving public IP address of App Gateway"
+publicAddress="$(az network public-ip show \
       --resource-group $rgName \
       --name appgwipaddr \
-      --query "dnsSettings.fqdn")"
+      --query ipAddress)"
 
 # Create SSL certificate for termination at Application Gateway
 echo "Creating SSL certificate for connection to App Gateway"
-openssl req -x509 -subj '/O=RetailCo/C=US/CN='$fqdn -sha256 -nodes -days 365 -newkey "rsa:2048" -keyout server-config/appgateway-privatekey.key -out server-config/appgateway.crt
+openssl req -x509 -subj '/O=RetailCo/C=US/CN='$publicAddress -sha256 -nodes -days 365 -newkey "rsa:2048" -keyout server-config/appgateway-privatekey.key -out server-config/appgateway.crt
 openssl pkcs12 -export -out server-config/appgateway.pfx -inkey server-config/appgateway-privatekey.key -in server-config/appgateway.crt  -passout pass:somepassword
 
 # Get the private IP address of the VM
@@ -57,7 +57,11 @@ openssl pkcs12 -export -out server-config/shipping-ssl.pfx -inkey server-config/
 
 # Get the public IP address of the VM
 echo "Retrieving public IP of VM"
-ipaddress="$(az vm show --name webservervm1 --resource-group $rgName --show-details --query [publicIps] --output tsv)"
+ipaddress="$(az vm show \
+  --name webservervm1 \
+  --resource-group $rgName \
+  --show-details --query [publicIps] \
+  --output tsv)"
 
 # Copy the certificate and key files, and create an ssh connection to the VM
 echo "Copy app files certificate, and keys to VM"
