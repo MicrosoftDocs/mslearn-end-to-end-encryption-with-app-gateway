@@ -36,6 +36,7 @@ publicAddress="$(az network public-ip show \
       --resource-group $rgName \
       --name appgwipaddr \
       --query ipAddress)"
+publicAddress=`eval echo $publicAddress`
 
 # Create SSL certificate for termination at Application Gateway
 echo "Creating SSL certificate for connection to App Gateway"
@@ -49,6 +50,7 @@ privateip="$(az vm list-ip-addresses \
       --name webservervm1 \
       --query "[0].virtualMachine.network.privateIpAddresses[0]" \
       --output tsv)"
+pricateip=`eval echo $privateip`
 
 # Create SSL certificate for the VM
 echo "Creating SSL certificate for connection from App Gateway to VM"
