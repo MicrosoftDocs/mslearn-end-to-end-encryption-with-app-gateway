@@ -8,7 +8,7 @@ az network vnet subnet create --resource-group $rgName --vnet-name shippingporta
 
 # Create public IP address for the gateway
 echo "Creating public IP address"
-az network public-ip create --resource-group $rgName --name appgwipaddr --sku Basic
+az network public-ip create --resource-group $rgName --name appgwipaddr --sku Standard
 
 # Create the App gateway
 echo "Creating App Gateway"
