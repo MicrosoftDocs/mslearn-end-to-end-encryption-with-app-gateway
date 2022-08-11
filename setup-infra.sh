@@ -66,6 +66,6 @@ ipaddress="$(az vm show \
 
 # Copy the certificate and key files, and create an ssh connection to the VM
 echo "Copy app files certificate, and keys to VM"
-scp -o StrictHostKeyChecking=no -r $HOME/shippingportal/ azureuser@$ipaddress:/home/azureuser/
+scp -o StrictHostKeyChecking=no -r $(dirname "$(realpath "$0")")/shippingportal/ azureuser@$ipaddress:/home/azureuser/
 echo "Configuring VM"
 ssh -o StrictHostKeyChecking=no "azureuser@$ipaddress" "bash /home/azureuser/shippingportal/server-config/setup-vm.sh"
