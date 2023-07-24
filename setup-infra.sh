@@ -12,7 +12,7 @@ az network public-ip create --resource-group $rgName --name appgwipaddr --sku St
 
 # Create the App gateway
 echo "Creating App Gateway"
-az network application-gateway create --name gw-shipping --resource-group $rgName --vnet-name shippingportalvnet --subnet appgatewaysubnet --capacity 2 --sku Standard_v2 --http-settings-cookie-based-affinity Disabled --http-settings-protocol Http --frontend-port 80 --routing-rule-type Basic --http-settings-port 80 --public-ip-address appgwipaddr
+az network application-gateway create --name gw-shipping --resource-group $rgName --vnet-name shippingportalvnet --subnet appgatewaysubnet --capacity 2 --sku Standard_v2 --http-settings-cookie-based-affinity Disabled --http-settings-protocol Http --frontend-port 80 --routing-rule-type Basic --http-settings-port 80 --public-ip-address appgwipaddr --priority 100
 
 # Create subnet for VM
 echo "Creating subnet for VM"
@@ -66,6 +66,6 @@ ipaddress="$(az vm show \
 
 # Copy the certificate and key files, and create an ssh connection to the VM
 echo "Copy app files certificate, and keys to VM"
-scp -o StrictHostKeyChecking=no -r $HOME/shippingportal/ azureuser@$ipaddress:/home/azureuser/
+scp -o StrictHostKeyChecking=no -r $(dirname "$(realpath "$0")")/shippingportal/ azureuser@$ipaddress:/home/azureuser/
 echo "Configuring VM"
 ssh -o StrictHostKeyChecking=no "azureuser@$ipaddress" "bash /home/azureuser/shippingportal/server-config/setup-vm.sh"
